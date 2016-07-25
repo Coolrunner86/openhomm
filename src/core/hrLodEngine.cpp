@@ -222,3 +222,127 @@ bool hrLodEngine::fillInternalCache(const QString &filename)
     }
     return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+hrLodEngineNew::hrLodEngineNew(const QString& path) : hrFileEngine(), _lf(NULL), _buffer(NULL)
+{
+    addPath(path);
+}
+
+hrLodEngineNew::~hrLodEngineNew()
+{
+
+}
+
+bool hrLodEngineNew::addPath(const QString& path)
+{
+    QFileInfo info(path);
+
+    if(!info.isDir())
+    {
+        //TODO log
+        return false;
+    }
+
+    QStringList filesList = QDir(path).entryList(".lod", QDir::Files);
+
+    for(const auto& file : filesList)
+        addFile(file);
+
+    return true;
+}
+
+QByteArray hrLodEngineNew::readEntry(const QString& name)
+{
+    QByteArray result;
+
+    if ( !_entryMap.contains(name) )
+    {
+        //TODO log
+        return result;
+    }
+
+    QSharedPtr<LodFile> lf = _entryMap.value(name);
+    LodEntry entry = lf->fat.value(name);
+
+    lf->file.seek(entry.offset);
+
+    if ( entry.csize == 0 )
+        result = _lf->file.read(entry.size);
+    else
+    {
+        QByteArray ba = lf->file.read(entry.csize);
+
+        char *l = (char*)&entry.size;
+
+        ba.prepend(l[0]);
+        ba.prepend(l[1]);
+        ba.prepend(l[2]);
+        ba.prepend(l[3]);
+
+        result = qUncompress(ba);
+    }
+
+    return result;
+}
+
+void hrLodEngineNew::addFile(const QString& path)
+{
+    QSharedPointer<LodFile> lf = new LodFile;
+    lf->file.setFileName(path);
+
+    if ( !lf->file.open(QIODevice::ReadOnly) )
+    {
+        qCritical("Can't open %s", qPrintable(path));
+        return;
+    }
+
+    LodHeader head;
+    lf->file.read((char *)&head, sizeof(head));
+
+    if ( head.magic != LOD_MAGIC )
+    {
+        qCritical("%s is not LOD archive", qPrintable(path));
+        return;
+    }
+
+    lf->fileseek(0x5C);//TODO replace magic number
+
+    for ( quint32 i = 0; i < head.files; ++i )
+    {
+        LodEntry entry;
+
+        lf->file.read((char *)&entry, sizeof(entry));
+        lf->fat.insert(QString(entry.name).toLower(), entry);
+
+        _entryMap.insert(QString(entry.name).toLower(), lf);
+    }
+}

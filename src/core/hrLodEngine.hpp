@@ -40,9 +40,7 @@ typedef QHashIterator<QString, LodEntry> LodFatIterator;
 struct LodFile
 {
     LodFat fat;
-    QFile *file;
-    LodFile() : file(NULL){}
-    ~LodFile() { delete file; }
+    QFile file;
 };
 
 typedef QHash<QString, LodFile*> LodFiles;
@@ -50,7 +48,7 @@ typedef QHashIterator<QString, LodFile*> LodFilesIterator;
 
 #include "hrAbstractFileEngine.hpp"
 
-class hrLodEngine : public hrAbstractFileEngine//: public QAbstractFileEngine
+class hrLodEngine : public QAbstractFileEngine
 {
 public:
     explicit hrLodEngine(const QString &path);
@@ -86,4 +84,27 @@ private:
     bool compressed;
 
     static LodFiles _cache;
+};
+
+
+class hrLodEngineNew : public hrFileEngine
+{
+public:
+    explicit hrLodEngineNew(const QString &path);
+    ~hrLodEngineNew();
+
+    virtual bool addPath(const QString &path);
+    virtual QByteArray readEntry(const QString& name);
+
+private:
+    void addFile(const QString& path);
+
+private:
+
+    LodFile* _lf;
+    QString _filename, _archivename;
+
+    bool compressed;
+
+    QHash<QString, QSharedPointer<LodFile>> _entryMap;
 };

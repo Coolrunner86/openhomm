@@ -2,4 +2,5 @@
 2. Transform hrWindow from QMainWindow to something lightweightable
 3. Do something with logging(separate it from hrApplication)
 4. transform object_class in hrObject to enum
-5.  magic numbers
+5. Terminate magic numbers
+6. Replace pack/unpack in maps to qCompress/qUncompress (no need for zlib sources)

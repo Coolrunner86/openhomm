@@ -11,7 +11,8 @@ HEADERS += hrString.hpp \
     hrFileEngineHandlers.hpp \
     hrAbstractFileEngineIterator.hpp \
     hrAbstractFileEngine.hpp \
-    hrAbstractFileEngineHandler.hpp
+    hrAbstractFileEngineHandler.hpp \
+    hrFileEngine.hpp
 SOURCES += hrString.cpp \
     hrLodEngine.cpp \
     hrLodEngineIterator.cpp \
