@@ -48,7 +48,9 @@ struct LodFile
 typedef QHash<QString, LodFile*> LodFiles;
 typedef QHashIterator<QString, LodFile*> LodFilesIterator;
 
-class hrLodEngine: public QAbstractFileEngine
+#include "hrAbstractFileEngine.hpp"
+
+class hrLodEngine : public hrAbstractFileEngine//: public QAbstractFileEngine
 {
 public:
     explicit hrLodEngine(const QString &path);
@@ -65,8 +67,7 @@ public:
     virtual qint64 read(char *data, qint64 maxlen);
 
     virtual QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const;
-
-    virtual QAbstractFileEngine::FileFlags fileFlags(QAbstractFileEngine::FileFlags type) const;
+    virtual FileFlags fileFlags(FileFlags type) const;
 
     virtual QString fileName(QAbstractFileEngine::FileName file) const;
 

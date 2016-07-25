@@ -40,6 +40,8 @@ int main(int argc, char** argv)
 
     hrFilesystem fs;
 
+    qDebug() << "Current directory is " << QDir::currentPath();
+
     fs.mount(QStringList() << "data/h3sprite.lod" << "data/h3bitmap.lod" << "data/heroes3.snd" );
 
     hrWindow w;

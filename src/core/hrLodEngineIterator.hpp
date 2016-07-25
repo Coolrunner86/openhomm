@@ -16,7 +16,10 @@
 //
 #pragma once
 
-class hrLodEngineIterator : public QAbstractFileEngineIterator
+#include "hrAbstractFileEngineIterator.hpp"
+//#include <QDir>
+
+class hrLodEngineIterator : public hrAbstractFileEngineIterator//: public QAbstractFileEngineIterator
 {
 public:
     hrLodEngineIterator(QDir::Filters filters, const QStringList &filterNames);

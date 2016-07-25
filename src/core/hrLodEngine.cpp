@@ -26,7 +26,7 @@ LodFiles hrLodEngine::_cache;
   \brief The hrLodEngine class
 */
 
-hrLodEngine::hrLodEngine(const QString& path) : QAbstractFileEngine(), _lf(NULL), _buffer(NULL)
+hrLodEngine::hrLodEngine(const QString& path) : hrAbstractFileEngine(), _lf(NULL), _buffer(NULL)
 {
     this->setFileName(path);
 }
@@ -118,12 +118,12 @@ QStringList hrLodEngine::entryList(QDir::Filters filters, const QStringList &fil
     if ( _lf != NULL )
         return _lf->fat.keys();
 
-    return QAbstractFileEngine::entryList(filters, filterNames);
+    return hrAbstractFileEngine::entryList(filters, filterNames);
 }
 
-QAbstractFileEngine::FileFlags hrLodEngine::fileFlags(QAbstractFileEngine::FileFlags type) const
+hrAbstractFileEngine::FileFlags hrLodEngine::fileFlags(FileFlags type) const
 {
-    QAbstractFileEngine::FileFlags ret = 0;
+    hrAbstractFileEngine::FileFlags ret = 0;
 
     if(type & TypesMask)
         ret |= FileType;
@@ -134,19 +134,19 @@ QAbstractFileEngine::FileFlags hrLodEngine::fileFlags(QAbstractFileEngine::FileF
     return ret;
 }
 
-QString hrLodEngine::fileName(QAbstractFileEngine::FileName) const
+QString hrLodEngine::fileName(FileName) const
 {
     return _filename;
 }
 
-QAbstractFileEngine::Iterator *hrLodEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
+hrAbstractFileEngine::Iterator* hrLodEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
 {
     return new hrLodEngineIterator(filters, filterNames);
 }
 
 bool hrLodEngine::supportsExtension(Extension ext) const
 {
-    return ext == QAbstractFileEngine::AtEndExtension;
+    return ext == AtEndExtension;
 }
 
 bool hrLodEngine::preloadFile()

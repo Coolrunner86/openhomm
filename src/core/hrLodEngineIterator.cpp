@@ -18,7 +18,8 @@
 #include "hrLodEngineIterator.hpp"
 
 hrLodEngineIterator::hrLodEngineIterator (QDir::Filters filters, const QStringList &filterNames)
-        : QAbstractFileEngineIterator(filters, filterNames), index(-1)
+        //: QAbstractFileEngineIterator(filters, filterNames), index(-1)
+          : hrAbstractFileEngineIterator(filters, filterNames), index(-1)
 {
 }
 

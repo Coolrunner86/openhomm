@@ -19,7 +19,8 @@
 #include "hrSndEngine.hpp"
 #include "hrFilesystem.hpp"
 
-QAbstractFileEngine* hrLodEngineHandler::create(const QString &filename) const
+//QAbstractFileEngine* hrLodEngineHandler::create(const QString &filename) const
+hrAbstractFileEngine* hrLodEngineHandler::create(const QString &filename) const
 {
     if ( filename.size() > 0 && filename.startsWith("lod:/", Qt::CaseInsensitive) )
     {
@@ -33,11 +34,11 @@ QAbstractFileEngine* hrVfsEngineHandler::create(const QString &fileName) const
 {
     if ( fileName.size() > 0 && fileName.startsWith("vfs:/", Qt::CaseInsensitive) )
     {
-        QString file = fileName, archive;
+        QString file = fileName;
 
         file.remove(0,5); // remove 'vfs:/' at the begining
 
-        archive = hrFilesystem::findInCache(file);
+        QString archive = hrFilesystem::findInCache(file);
 
         if ( !archive.isNull() )
         {

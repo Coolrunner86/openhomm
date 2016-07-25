@@ -21,10 +21,12 @@ public:
     QAbstractFileEngine *create(const QString &fileName) const;
 };
 
-class hrLodEngineHandler : public QAbstractFileEngineHandler
+//class hrLodEngineHandler : public QAbstractFileEngineHandler
+class hrLodEngineHandler : public hrAbstractFileEngineHandler
 {
 public:
-    QAbstractFileEngine *create(const QString &fileName) const;
+//    QAbstractFileEngine *create(const QString &fileName) const;
+    hrAbstractFileEngine *create(const QString &fileName) const;
 };
 
 class hrVfsEngineHandler : public QAbstractFileEngineHandler

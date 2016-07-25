@@ -16,7 +16,7 @@
 //
 #pragma once
 
-class hrSndEngineIterator : public QAbstractFileEngineIterator
+class hrSndEngineIterator :  public QAbstractFileEngineIterator//public hrAbstractFileEngineIterator//:
 {
 public:
     hrSndEngineIterator(QDir::Filters filters, const QStringList &filterNames);

@@ -88,10 +88,12 @@ void hrApplication::hrLogger(QtMsgType type, const QMessageLogContext &context, 
     static QMutex mutex;
     QMutexLocker lock(&mutex);
     static std::ofstream logFile("logfile.txt");
+
     if (logFile)
     {
         logFile << qPrintable(logMessage) << std::endl;
     }
+
     fprintf(stderr, "%s\n", logMessage.toLocal8Bit().constData());
     fflush(stderr);
 }

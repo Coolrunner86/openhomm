@@ -19,6 +19,8 @@
 
 hrSndEngineIterator::hrSndEngineIterator (QDir::Filters filters, const QStringList &filterNames)
         : QAbstractFileEngineIterator(filters, filterNames), index(-1)
+          //: hrAbstractFileEngineIterator(filters, filterNames), index(-1)
+
 {
 }
 
