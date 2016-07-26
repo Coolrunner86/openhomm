@@ -19,7 +19,7 @@
 #include "hrAbstractFileEngineIterator.hpp"
 //#include <QDir>
 
-class hrLodEngineIterator : public hrAbstractFileEngineIterator//: public QAbstractFileEngineIterator
+class hrLodEngineIterator : public QAbstractFileEngineIterator
 {
 public:
     hrLodEngineIterator(QDir::Filters filters, const QStringList &filterNames);

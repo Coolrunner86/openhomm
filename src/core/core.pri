@@ -12,7 +12,10 @@ HEADERS += hrString.hpp \
     hrAbstractFileEngineIterator.hpp \
     hrAbstractFileEngine.hpp \
     hrAbstractFileEngineHandler.hpp \
-    hrFileEngine.hpp
+    hrFileEngine.hpp \
+    $$PWD/hrResourceFile.hpp \
+    $$PWD/hrLodFile.hpp \
+    $$PWD/hrSndFile.hpp
 SOURCES += hrString.cpp \
     hrLodEngine.cpp \
     hrLodEngineIterator.cpp \
@@ -20,4 +23,6 @@ SOURCES += hrString.cpp \
     hrSndEngine.cpp \
     hrSettings.cpp \
     hrFilesystem.cpp \
-    hrFileEngineHandlers.cpp
+    hrFileEngineHandlers.cpp \
+    $$PWD/hrLodFile.cpp \
+    $$PWD/hrSndFile.cpp

@@ -16,6 +16,8 @@
 //
 #pragma once
 
+class hrLodEngine;
+
 class hrLodEngineHandler;
 class hrSndEngineHandler;
 class hrVfsEngineHandler;
@@ -38,7 +40,11 @@ private:
 
 // data
 private:
-    hrLodEngineHandler *lodHandler;
+//    hrLodEngineHandler *lodHandler;
+//    hrSndEngineHandler *sndHandler;
+//    hrVfsEngineHandler *vfsHandler;
+
+    hrLodEngine* lodHandler;
     hrSndEngineHandler *sndHandler;
     hrVfsEngineHandler *vfsHandler;
 

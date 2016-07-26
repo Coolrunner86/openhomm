@@ -30,3 +30,7 @@ HEADERS += hrApplication.hpp \
     precompiled.hpp
 
 QMAKE_DISTCLEAN += version.hpp
+
+debug {
+    DEFINES += DEBUG
+}

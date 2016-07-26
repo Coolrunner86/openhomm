@@ -24,6 +24,8 @@
 #include "hrFileEngineHandlers.hpp"
 #include "hrSettings.hpp"
 
+#include "hrLodEngine.hpp"
+
 QString hrApplication::mapName = "";
 /*!
   \class hrApplication
@@ -65,7 +67,8 @@ hrApplication::~hrApplication()
 
 void hrApplication::createFileEngineHandlers()
 {
-    lodHandler = new hrLodEngineHandler;
+//    lodHandler = new hrLodEngineHandler;
+    lodHandler = new hrLodEngine(hrSettings::get().gameDir());
     sndHandler = new hrSndEngineHandler;
     vfsHandler = new hrVfsEngineHandler;
 }

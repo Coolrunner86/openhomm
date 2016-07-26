@@ -98,27 +98,53 @@ bool hrFilesystem::mount(const QString &path)
 
     qCInfo(fsCat) << QString("Trying to mount: %1").arg(normalPath);
 
-    if ( normalPath.endsWith(".lod", Qt::CaseInsensitive) )
-    {
-        if ( hrLodEngine::fillInternalCache(normalPath) )
-            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-        else
-            qCCritical(fsCat) << MOUNT_FAILED;
-    }
-    else if ( normalPath.endsWith(".snd", Qt::CaseInsensitive) )
-    {
-        if ( hrSndEngine::fillInternalCache(normalPath) )
-            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-        else
-            qCCritical(fsCat) << MOUNT_FAILED;
-    }
-    else
+    if ( QFileInfo(normalPath).isDir() )
     {
         if ( !mountDir(normalPath))
-            qCCritical(fsCat) << "\tUnsupported archive type";
-        else
-            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+        {
+            qCCritical(fsCat) << "\tFailed to mount dir " << normalPath;
+            return false;
+        }
+
+        qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+        return true;
     }
+
+    QString extension = normalPath.right(normalPath.length() - normalPath.lastIndexOf('.'));
+
+    if ( !_extensions.contains(extension) )
+    {
+        qCCritical(fsCat) << "\tUnsupported archive type";
+        return false;
+    }
+
+    auto& creator = _extensions.value(extension);
+    _files.append(creator(normalPath));//TODO errors support
+
+    qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+
+
+//    if ( normalPath.endsWith(".lod", Qt::CaseInsensitive) )
+//    {
+//        //if ( hrLodEngine::fillInternalCache(normalPath) )
+//            //qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+//        //else
+//            qCCritical(fsCat) << MOUNT_FAILED;
+//    }
+//    else if ( normalPath.endsWith(".snd", Qt::CaseInsensitive) )
+//    {
+//        if ( hrSndEngine::fillInternalCache(normalPath) )
+//            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+//        else
+//            qCCritical(fsCat) << MOUNT_FAILED;
+//    }
+//    else
+//    {
+//        if ( !mountDir(normalPath))
+//            qCCritical(fsCat) << "\tUnsupported archive type";
+//        else
+//            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
+//    }
 
     return true;
 }
@@ -139,6 +165,26 @@ bool hrFilesystem::umount(const QString &path)
 {
     Q_UNUSED(path);
     return false;
+}
+
+void hrFilesystem::registerExtension(const QString& extension, const std::function<hrResourceFile*, const QString&>& factory)
+{
+    _extensions.insert(extension, factory);
+}
+
+QByteArray hrFilesystem::findResource(const QString& name)
+{
+    QByteArray result;
+
+    for(const auto& file : _files)
+    {
+        result = file->getEntry(name);
+
+        if(result.size() > 0)
+            break;
+    }
+
+    return result;
 }
 
 void hrFilesystem::fillGeneralCache(const QString &filename, const QString &archive)

@@ -4,3 +4,4 @@
 4. transform object_class in hrObject to enum
 5. Terminate magic numbers
 6. Replace pack/unpack in maps to qCompress/qUncompress (no need for zlib sources)
+7. Transfer hrCache to core classes

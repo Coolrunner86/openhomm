@@ -22,12 +22,10 @@ public:
 };
 
 //class hrLodEngineHandler : public QAbstractFileEngineHandler
-class hrLodEngineHandler : public hrAbstractFileEngineHandler
-{
-public:
+//{
+//public:
 //    QAbstractFileEngine *create(const QString &fileName) const;
-    hrAbstractFileEngine *create(const QString &fileName) const;
-};
+//};
 
 class hrVfsEngineHandler : public QAbstractFileEngineHandler
 {

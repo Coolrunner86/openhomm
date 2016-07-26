@@ -20,15 +20,14 @@
 #include "hrFilesystem.hpp"
 
 //QAbstractFileEngine* hrLodEngineHandler::create(const QString &filename) const
-hrAbstractFileEngine* hrLodEngineHandler::create(const QString &filename) const
-{
-    if ( filename.size() > 0 && filename.startsWith("lod:/", Qt::CaseInsensitive) )
-    {
-        return new hrLodEngine(filename);
-    }
+//{
+//    if ( filename.size() > 0 && filename.startsWith("lod:/", Qt::CaseInsensitive) )
+//    {
+//        return new hrLodEngine(filename);
+//    }
 
-    return NULL;
-}
+//    return NULL;
+//}
 
 QAbstractFileEngine* hrVfsEngineHandler::create(const QString &fileName) const
 {
@@ -42,9 +41,10 @@ QAbstractFileEngine* hrVfsEngineHandler::create(const QString &fileName) const
 
         if ( !archive.isNull() )
         {
-            if ( archive.indexOf(".lod") != -1 )
-                return new hrLodEngine(QString("lod:/") + archive + "/" + file);
-            else if ( archive.indexOf(".snd") != -1 )
+//            if ( archive.indexOf(".lod") != -1 )
+//                return new hrLodEngine(QString("lod:/") + archive + "/" + file);
+//            else
+            if ( archive.indexOf(".snd") != -1 )
                 return new hrSndEngine(QString("snd:/") + archive + "/" + file);
             else
             {

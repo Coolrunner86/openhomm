@@ -37,7 +37,15 @@ const quint32 LOD_MAGIC = 0x00444f4c;
 typedef QHash<QString, LodEntry> LodFat;
 typedef QHashIterator<QString, LodEntry> LodFatIterator;
 
-struct LodFile
+//struct LodFile
+//{
+//    LodFat fat;
+//    QFile* file;
+//    LodFile() : file(nullptr) {}
+//    ~LodFile() { if(file) delete file; }
+//};
+
+struct LodFile//LodFileNew
 {
     LodFat fat;
     QFile file;
@@ -46,52 +54,52 @@ struct LodFile
 typedef QHash<QString, LodFile*> LodFiles;
 typedef QHashIterator<QString, LodFile*> LodFilesIterator;
 
-#include "hrAbstractFileEngine.hpp"
+//class hrLodEngine : public QAbstractFileEngine
+//{
+//public:
+//    explicit hrLodEngine(const QString &path);
+//    ~hrLodEngine();
 
-class hrLodEngine : public QAbstractFileEngine
+//    virtual void setFileName(const QString &file);
+
+//    virtual bool open(QIODevice::OpenMode flags) ;
+//    virtual bool close();
+//    virtual qint64 size() const;
+//    virtual qint64 pos() const;
+//    virtual bool atEnd() const;
+//    virtual bool seek(qint64);
+//    virtual qint64 read(char *data, qint64 maxlen);
+
+//    virtual QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const;
+//    virtual FileFlags fileFlags(FileFlags type) const;
+
+//    virtual QString fileName(QAbstractFileEngine::FileName file) const;
+
+//    virtual Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
+
+//    bool supportsExtension(Extension) const;
+
+//    static bool fillInternalCache(const QString &filename);
+//private:
+//    bool preloadFile();
+
+//private:
+//    LodFile* _lf;
+//    QString _filename, _archivename;
+//    QBuffer *_buffer;
+//    bool compressed;
+
+//    static LodFiles _cache;
+//};
+
+//#include "hrFileEngine.hpp"
+
+
+class hrLodEngine : public hrFileEngine
 {
 public:
-    explicit hrLodEngine(const QString &path);
+    hrLodEngine(const QString &path);
     ~hrLodEngine();
-
-    virtual void setFileName(const QString &file);
-
-    virtual bool open(QIODevice::OpenMode flags) ;
-    virtual bool close();
-    virtual qint64 size() const;
-    virtual qint64 pos() const;
-    virtual bool atEnd() const;
-    virtual bool seek(qint64);
-    virtual qint64 read(char *data, qint64 maxlen);
-
-    virtual QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const;
-    virtual FileFlags fileFlags(FileFlags type) const;
-
-    virtual QString fileName(QAbstractFileEngine::FileName file) const;
-
-    virtual Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
-
-    bool supportsExtension(Extension) const;
-
-    static bool fillInternalCache(const QString &filename);
-private:
-    bool preloadFile();
-
-private:
-    LodFile* _lf;
-    QString _filename, _archivename;
-    QBuffer *_buffer;
-    bool compressed;
-
-    static LodFiles _cache;
-};
-
-
-class hrLodEngineNew : public hrFileEngine
-{
-public:
-    explicit hrLodEngineNew(const QString &path);
-    ~hrLodEngineNew();
 
     virtual bool addPath(const QString &path);
     virtual QByteArray readEntry(const QString& name);
