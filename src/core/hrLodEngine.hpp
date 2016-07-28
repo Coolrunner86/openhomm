@@ -92,8 +92,7 @@ typedef QHashIterator<QString, LodFile*> LodFilesIterator;
 //    static LodFiles _cache;
 //};
 
-//#include "hrFileEngine.hpp"
-
+#include "hrFileEngine.hpp"
 
 class hrLodEngine : public hrFileEngine
 {

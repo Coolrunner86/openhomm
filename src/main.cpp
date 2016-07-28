@@ -19,6 +19,8 @@
 #include "hrH3Map.hpp"
 #include "hrFilesystem.hpp"
 #include "hrWindow.hpp"
+#include "hrLodFile.hpp"
+#include "hrSndFile.hpp"
 
 void checkPlugins()
 {

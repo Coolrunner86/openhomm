@@ -9,11 +9,11 @@ struct SndEntry
     quint32 size;
 };
 
-typedef QHash<QString, SndEntry> EntryMap;
-
 class hrSndFile : public hrResourceFile
 {
 public:
+    typedef QHash<QString, SndEntry> EntryMap;
+
     hrSndFile(const QString& path);
     ~hrSndFile();
 

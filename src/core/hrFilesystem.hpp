@@ -18,6 +18,8 @@
 
 #include <functional>
 
+#include "hrResourceFile.hpp"
+
 typedef QHash<QString, QString> fileSystemCache;
 typedef QHashIterator<QString, QString> fileSystemCacheIterator;
 
@@ -30,7 +32,7 @@ public:
 
     bool umount(const QString &path);
 
-    void registerExtension(const QString& extension, const std::function<hrResourceFile*, const QString&>& factory);
+    void registerExtension(const QString& extension, const std::function<hrResourceFile*(const QString&)>& factory);
 
     QByteArray findResource(const QString& name);
 
@@ -51,6 +53,6 @@ private:
 
     static fileSystemCache _cache;
 
-    QMap<QString, std::function<hrResourceFile*, const QString&>> _extensions;
+    QMap<QString, std::function<hrResourceFile*(const QString&)>> _extensions;
     QList<QSharedPointer<hrResourceFile>> _files;
 };

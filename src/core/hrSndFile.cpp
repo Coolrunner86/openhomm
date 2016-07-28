@@ -1,12 +1,12 @@
 #include "hrSndFile.hpp"
 
-hrSndFile::hrSndFile(const QString &path) :
+hrSndFile::hrSndFile(const QString& path) :
     hrResourceFile(path),
     _file(path)
 {    
-    if ( !_file.open(QIODevice::ReadOnly ) )
+    if ( !_file.open(QIODevice::ReadOnly) )
     {
-        qCritical("Can't open %s", qPrintable(filename));
+        qCritical("Can't open %s", qPrintable(path));
         return;
     }
 

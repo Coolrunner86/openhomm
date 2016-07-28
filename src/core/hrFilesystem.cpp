@@ -119,7 +119,7 @@ bool hrFilesystem::mount(const QString &path)
     }
 
     auto& creator = _extensions.value(extension);
-    _files.append(creator(normalPath));//TODO errors support
+    _files.append(QSharedPointer<hrResourceFile>(creator(normalPath)));//TODO errors support
 
     qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
 
@@ -167,7 +167,7 @@ bool hrFilesystem::umount(const QString &path)
     return false;
 }
 
-void hrFilesystem::registerExtension(const QString& extension, const std::function<hrResourceFile*, const QString&>& factory)
+void hrFilesystem::registerExtension(const QString& extension, const std::function<hrResourceFile*(const QString&)>& factory)
 {
     _extensions.insert(extension, factory);
 }

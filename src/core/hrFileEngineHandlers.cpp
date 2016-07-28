@@ -31,7 +31,7 @@
 
 QAbstractFileEngine* hrVfsEngineHandler::create(const QString &fileName) const
 {
-    if ( fileName.size() > 0 && fileName.startsWith("vfs:/", Qt::CaseInsensitive) )
+    /*if ( fileName.size() > 0 && fileName.startsWith("vfs:/", Qt::CaseInsensitive) )
     {
         QString file = fileName;
 
@@ -54,15 +54,17 @@ QAbstractFileEngine* hrVfsEngineHandler::create(const QString &fileName) const
             }
         } else
             qCritical("Can't find `%s` in internal cache", qPrintable(file));
-    }
+    }*/
+
+    qCritical("Called hrVfsFileEngineHandler::create");
     return NULL;
 }
 
 QAbstractFileEngine* hrSndEngineHandler::create(const QString &filename) const
 {
-    if ( filename.size() > 0 && filename.startsWith("snd:/", Qt::CaseInsensitive) )
+    /*if ( filename.size() > 0 && filename.startsWith("snd:/", Qt::CaseInsensitive) )
     {
         return new hrSndEngine(filename);
-    }
+    }*/
     return 0;
 }

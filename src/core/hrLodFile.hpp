@@ -1,5 +1,7 @@
 #pragma once
 
+#include "hrResourceFile.hpp"
+
 struct LodEntry
 {
     char name[12];  // null-terminated, sometimes null-padded too, sometimes padded with, well, something after the null
@@ -18,14 +20,12 @@ struct LodHeader
 };
 
 const quint32 LOD_MAGIC = 0x00444f4c;
-typedef QHash<QString, LodEntry> EntryMap;
-//typedef QHashIterator<QString, LodEntry> LodFatIterator;
-
-#include "hrResourceFile.hpp"
 
 class hrLodFile : public hrResourceFile
 {
 public:
+    typedef QHash<QString, LodEntry> EntryMap;
+
     hrLodFile(const QString& path);
     ~hrLodFile();
 
@@ -37,4 +37,3 @@ private:
     EntryMap _entryMap;
 };
 
-#endif // HRLODFILE_H
