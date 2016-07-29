@@ -61,6 +61,16 @@ void hrCache::setContext(const QGLContext *context)
     }
 }
 
+QByteArray hrCache::getResource(const QString& resName)
+{
+    QByteArray data = _filesystem->findResource(resName);
+
+    if(data.isEmpty())
+        qFatal("hrCache: File %s not found", qPrintable(resName));
+
+    return data;
+}
+
 hrGraphicsItem hrCache::loadItem(const QString &name, bool notDeletable)
 {
     static int inc = 0;
@@ -95,7 +105,18 @@ hrCacheItem* hrCache::Load(const QString &name) const
 {
     hrCacheItem *item = new hrCacheItem();
 
-    QImageReader ir("vfs:/" + name);
+    QByteArray data = _filesystem->findResource(name);
+
+    if(data.isEmpty())
+    {
+        qFatal("hrCache: File %s not found", qPrintable(name));
+        return nullptr;
+    }
+
+    QBuffer buf(&data);
+
+    //QImageReader ir("vfs:/" + name);
+    QImageReader ir(&buf);
     QImage im;
     if (ir.read(&im))
     {

@@ -30,6 +30,12 @@ public:
 
     void AdventureScreen();
 
+#ifdef DEMO
+
+    void demo();
+
+#endif
+
 private:
     hrMenuScreen *menuscr;
     hrAdventureScreen *advscr;

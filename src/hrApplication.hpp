@@ -16,37 +16,19 @@
 //
 #pragma once
 
-class hrLodEngine;
-
-class hrLodEngineHandler;
-class hrSndEngineHandler;
-class hrVfsEngineHandler;
+#include "hrFilesystem.hpp"
 
 class hrApplication : public QApplication
 {
     Q_OBJECT
+
 public:
     hrApplication(int &argc, char **argv);
     ~hrApplication();
-    static QString getMapName()
-    {
-        return mapName;
-    }
+
 private:
-    void createFileEngineHandlers();
-    void destroyFileEngineHandlers();
+    hrFilesystem _filesystem;
+
     void loadSettings();
     static void hrLogger (QtMsgType type, const QMessageLogContext &context, const QString &msg);
-
-// data
-private:
-//    hrLodEngineHandler *lodHandler;
-//    hrSndEngineHandler *sndHandler;
-//    hrVfsEngineHandler *vfsHandler;
-
-    hrLodEngine* lodHandler;
-    hrSndEngineHandler *sndHandler;
-    hrVfsEngineHandler *vfsHandler;
-
-    static QString mapName;
 };

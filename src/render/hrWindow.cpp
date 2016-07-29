@@ -71,23 +71,34 @@ hrWindow::~hrWindow()
     delete advscr;
 }
 
-void hrWindow::AdventureScreen()
+#ifdef DEMO
+
+void hrWindow::demo()
 {
     hrH3Map reader;
 
-    QString filename = hrApplication::getMapName();
-
-    bool isMapLoad;
-    if ( filename.isEmpty() )
-        isMapLoad = reader.load("Maps/Back For Revenge.h3m");
-    else
-        isMapLoad = reader.load(filename);
+    bool isMapLoad = reader.load("Maps/Back For Revenge.h3m");
 
     if (isMapLoad)
     {
         render->setScene(advscr);
         advscr->loadMap(&reader);
     }
+}
+
+#endif
+
+void hrWindow::AdventureScreen()
+{
+//    hrH3Map reader;
+
+//    bool isMapLoad = reader.load("Maps/Back For Revenge.h3m");
+
+//    if (isMapLoad)
+//    {
+//        render->setScene(advscr);
+//        advscr->loadMap(&reader);
+//    }
 }
 
 void hrWindow::resizeEvent(QResizeEvent *event)

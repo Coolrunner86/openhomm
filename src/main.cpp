@@ -22,6 +22,8 @@
 #include "hrLodFile.hpp"
 #include "hrSndFile.hpp"
 
+#include "hrCache.hpp"
+
 void checkPlugins()
 {
     QList<QByteArray> formats = QImageReader::supportedImageFormats();
@@ -36,26 +38,25 @@ int main(int argc, char** argv)
 {
     QT_REQUIRE_VERSION(argc, argv, "5.5.1");
 
-    hrApplication app(argc, argv);
-
-#ifdef DEBUG
+#if defined(DEBUG) || defined(DEMO)
 
     qDebug() << "Current directory is " << QDir::currentPath();
     QDir::setCurrent("../../../Heroes_data");
 
 #endif
 
+    hrApplication app(argc, argv);
+
     checkPlugins();
-
-    hrFilesystem fs;
-
-    fs.registerExtension("lod", [](const QString& path) -> hrResourceFile* { return new hrLodFile(path); });
-    fs.registerExtension("snd", [](const QString& path) -> hrResourceFile* { return new hrSndFile(path); });
-    fs.mount(QStringList() << "data/h3sprite.lod" << "data/h3bitmap.lod" << "data/heroes3.snd" );
 
     hrWindow w;
     w.show();
+
+#ifdef DEMO
+    w.demo();
+#else
     w.AdventureScreen();
+#endif
 
     return app.exec();
 }

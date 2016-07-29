@@ -41,7 +41,7 @@ void hrMenuScreen::onMouseLeave()
 
 void hrMenuScreen::showLoadScreen()
 {
-    hrCache &cache = hrCache::Get();
+    hrCache &cache = hrCache::getInstance();
     loadScreen = cache.loadItem("loadbar.pcx");
     emit sceneChanged();
 }

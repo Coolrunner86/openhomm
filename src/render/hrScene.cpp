@@ -17,6 +17,8 @@
 #include "precompiled.hpp"
 #include "hrScene.hpp"
 
+#include "hrCache.hpp"
+
 /*!
   \class hrScene
   \brief The hrScene class
@@ -50,7 +52,11 @@ QListIterator<hrGraphicsItem> hrScene::getItems()
 
 void hrScene::loadCursor(const QString &name)
 {
-    QImageReader ir("vfs:/" + name);
+    QByteArray res = hrCache::getInstance().getResource(name);
+    QBuffer buffer(&res);
+
+    //QImageReader ir("vfs:/" + name);
+    QImageReader ir(&buffer);
     QImage im;
     for (int i = 0; ir.jumpToImage(i); i++)
     {

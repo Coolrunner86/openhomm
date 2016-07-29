@@ -143,7 +143,7 @@ void hrAdventureScreen::loadMap(hrH3Map *reader)
 
     hasUnderground = reader->hasUnderground();
 
-    hrCache& cache = hrCache::Get();
+    hrCache& cache = hrCache::getInstance();
 
     for (int i = 0; i < size.width() * size.height(); i++)
     {
@@ -191,7 +191,7 @@ void hrAdventureScreen::loadMap(hrH3Map *reader)
 
 void hrAdventureScreen::loadTile(const hrTile &tile)
 {
-    hrCache& cache = hrCache::Get();
+    hrCache& cache = hrCache::getInstance();
     if (!itemsTerrain.contains(tile.terrainId))
     {
         itemsTerrain[tile.terrainId] = cache.loadItem(tile.getTerrainName(), true);

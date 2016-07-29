@@ -1,0 +1,2 @@
+# define VERSION_RELEASE_STR "OpenHoMM 1.0.0.{f3d8637} Date: Thu Jul 28 20:16:46 2016 +0300"
+# define VERSION_STR 1,0,0

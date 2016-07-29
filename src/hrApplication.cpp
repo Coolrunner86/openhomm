@@ -21,12 +21,11 @@
 #include "hrApplication.hpp"
 #include "hrPushButton.hpp"
 #include "hrSettings.hpp"
-#include "hrFileEngineHandlers.hpp"
-#include "hrSettings.hpp"
 
-#include "hrLodEngine.hpp"
+#include "hrCache.hpp"
+#include "hrLodFile.hpp"
+#include "hrSndFile.hpp"
 
-QString hrApplication::mapName = "";
 /*!
   \class hrApplication
 */
@@ -36,24 +35,18 @@ QString hrApplication::mapName = "";
   \sa hrSettings
 */
 hrApplication::hrApplication(int &argc, char **argv):
-        QApplication(argc, argv),
-        lodHandler(nullptr),
-        sndHandler(nullptr),
-        vfsHandler(nullptr)
+        QApplication(argc, argv)
 {
-    mapName = hrSettings::get().gameDir() + '/';
-
     QString logType = hrSettings::get().logType();
 
     qInstallMessageHandler(&hrApplication::hrLogger);
     qSetMessagePattern("[%{time process}] [%{type}]%{if-category} [%{category}]%{endif} %{message}");
-    this->createFileEngineHandlers();
 
-    if ( argc > 1 ) {
-        mapName = argv[1];
-        qDebug() << mapName;
-    } else
-        mapName += "Maps/Back For Revenge.h3m";
+    _filesystem.registerExtension("lod", [](const QString& path) -> hrResourceFile* { return new hrLodFile(path); });
+    _filesystem.registerExtension("snd", [](const QString& path) -> hrResourceFile* { return new hrSndFile(path); });
+    _filesystem.mount(QStringList() << "data/h3sprite.lod" << "data/h3bitmap.lod" << "data/heroes3.snd" );
+
+    hrCache::getInstance().setFilesystem(&_filesystem);
 }
 
 /*!
@@ -62,27 +55,6 @@ hrApplication::hrApplication(int &argc, char **argv):
   */
 hrApplication::~hrApplication()
 {
-    this->destroyFileEngineHandlers();
-}
-
-void hrApplication::createFileEngineHandlers()
-{
-//    lodHandler = new hrLodEngineHandler;
-    lodHandler = new hrLodEngine(hrSettings::get().gameDir());
-    sndHandler = new hrSndEngineHandler;
-    vfsHandler = new hrVfsEngineHandler;
-}
-
-void hrApplication::destroyFileEngineHandlers()
-{
-    delete lodHandler;
-    lodHandler = nullptr;
-
-    delete sndHandler;
-    sndHandler = nullptr;
-
-    delete vfsHandler;
-    vfsHandler = nullptr;
 }
 
 void hrApplication::hrLogger(QtMsgType type, const QMessageLogContext &context, const QString &msg)

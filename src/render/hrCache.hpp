@@ -17,6 +17,8 @@
 #pragma once
 #include "hrGraphicsItem.hpp"
 
+#include "hrFilesystem.hpp"
+
 class hrCacheItem
 {
 public:
@@ -71,7 +73,7 @@ class hrCache
 public:
     ~hrCache();
 
-    static hrCache& Get()
+    static hrCache& getInstance()
     {
         static hrCache cache;
         return cache;
@@ -81,10 +83,28 @@ public:
     hrGraphicsItem loadItem(const QString& name, bool notDeletable = false);
     void setContext(const QGLContext *context);
 
+    void setFilesystem(hrFilesystem* filesystem)
+    {
+        _filesystem = filesystem;
+    }
+
+    QByteArray getResource(const QString& resName);
+
 private:
-    hrCache();
     GLuint target;
     GLuint format;
+
+    hrFilesystem* _filesystem;
+
+    QCache<hrCacheKey, hrCacheItem> cache;
+    QMap<hrCacheKey, hrCacheItem*> map;
+
+    QMap<hrCacheKey, QString> files;
+
+    //QFile cacheFile;
+    //QHash<QString, qint64> fat;
+
+    hrCache();
 
     hrCacheItem* Load(const QString &name) const;
     GLuint Load(const QImage &im) const;
@@ -98,14 +118,6 @@ private:
                      , int size) const;
 
     int getCompressedImageSize() const;
-
-    QCache<hrCacheKey, hrCacheItem> cache;
-    QMap<hrCacheKey, hrCacheItem*> map;
-
-    QMap<hrCacheKey, QString> files;
-
-    //QFile cacheFile;
-    //QHash<QString, qint64> fat;
 
     QImage ImageToPOT(const QImage &im) const;
     void checkExtensions();

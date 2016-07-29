@@ -17,12 +17,7 @@
 #pragma once
 
 #include <functional>
-
 #include "hrResourceFile.hpp"
-
-typedef QHash<QString, QString> fileSystemCache;
-typedef QHashIterator<QString, QString> fileSystemCacheIterator;
-
 
 class hrFilesystem
 {
@@ -37,22 +32,15 @@ public:
     QByteArray findResource(const QString& name);
 
 
-
-
-    static void fillGeneralCache(const QString& filename, const QString &archive);
-    static QString findInCache(const QString& filename);
-
-
-    static QString extractFilenameFromPath(const QString& path, const char* ext);
-    static QString extractArchnameFromPath(const QString& path, const char* ext);
+//    static QString extractFilenameFromPath(const QString& path, const char* ext);
+//    static QString extractArchnameFromPath(const QString& path, const char* ext);
 
 private:
-    bool mountDir(const QString &path);
-    void walkDirectory(const QString &path, QStringList &fileList);
-    QString adjustCaseInPath(const QString &path, const QDir &baseDir);
-
-    static fileSystemCache _cache;
-
     QMap<QString, std::function<hrResourceFile*(const QString&)>> _extensions;
     QList<QSharedPointer<hrResourceFile>> _files;
+
+    bool mountDir(const QString &path);
+    bool mountFile(const QString& path);
+    void walkDirectory(const QString &path, QStringList &fileList);
+    QString adjustCaseInPath(const QString &path, const QDir &baseDir);
 };

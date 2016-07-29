@@ -54,7 +54,7 @@ void hrRender::onCursorChanged(int type)
 void hrRender::initializeGL()
 {
     checkExtensions();
-    hrCache& cache = hrCache::Get();
+    hrCache& cache = hrCache::getInstance();
     cache.setContext(context());
 
     glViewport(0, 0, width()*devicePixelRatio(), height()*devicePixelRatio());
@@ -99,7 +99,7 @@ void hrRender::paintGL()
     //timer.start();
     glClear(GL_COLOR_BUFFER_BIT);
 
-    hrCache& cache = hrCache::Get();
+    hrCache& cache = hrCache::getInstance();
     scene->collect();
     QListIterator<hrGraphicsItem> it = scene->getItems();
 

@@ -44,13 +44,12 @@ QByteArray hrLodFile::getEntry(const QString &entryName)
 {
     QByteArray result;
 
-    if ( !_entryMap.contains(entryName) )
-    {
-        //TODO log
-        return result;
-    }
+    QString lowerName = entryName.toLower();
 
-    LodEntry entry = _entryMap.value(entryName);
+    if ( !_entryMap.contains(lowerName) )
+        return result;
+
+    LodEntry entry = _entryMap.value(lowerName);
 
     _file.seek(entry.offset);
 

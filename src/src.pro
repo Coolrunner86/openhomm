@@ -25,12 +25,18 @@ PRECOMPILED_HEADER = precompiled.hpp
 
 SOURCES += main.cpp \
     hrApplication.cpp \
+    hrVideoPlayer.cpp
 
 HEADERS += hrApplication.hpp \
-    precompiled.hpp
+    precompiled.hpp \
+    hrVideoPlayer.hpp
 
 QMAKE_DISTCLEAN += version.hpp
 
 debug {
     DEFINES += DEBUG
+}
+
+demo {
+    DEFINES += DEMO
 }

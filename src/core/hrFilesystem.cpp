@@ -16,11 +16,7 @@
 //
 #include "precompiled.hpp"
 #include "hrFilesystem.hpp"
-#include "hrLodEngine.hpp"
-#include "hrSndEngine.hpp"
 #include "hrSettings.hpp"
-
-fileSystemCache hrFilesystem::_cache;
 
 const char* MOUNT_SUCCESSFULLY = "\tSuccessfully mounted!";
 const char* MOUNT_FAILED       = "\tFailed to mount!";
@@ -82,6 +78,7 @@ QString hrFilesystem::adjustCaseInPath(const QString &path, const QDir &baseDir)
 
         last = candidates.first();
     }
+
     return current.filePath(last);
 }
 
@@ -91,7 +88,7 @@ bool hrFilesystem::mount(const QString &path)
 
     Q_ASSERT(gameRoot.exists());
 
-    QString normalPath = adjustCaseInPath(path,gameRoot);
+    QString normalPath = adjustCaseInPath(path, gameRoot);
 
     if (normalPath.isNull() || !QFile::exists(normalPath))
         return false;
@@ -106,45 +103,10 @@ bool hrFilesystem::mount(const QString &path)
             return false;
         }
 
-        qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-        return true;
+        qCInfo(fsCat) << "\tDirectory " << normalPath << MOUNT_SUCCESSFULLY;
     }
-
-    QString extension = normalPath.right(normalPath.length() - normalPath.lastIndexOf('.'));
-
-    if ( !_extensions.contains(extension) )
-    {
-        qCCritical(fsCat) << "\tUnsupported archive type";
-        return false;
-    }
-
-    auto& creator = _extensions.value(extension);
-    _files.append(QSharedPointer<hrResourceFile>(creator(normalPath)));//TODO errors support
-
-    qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-
-
-//    if ( normalPath.endsWith(".lod", Qt::CaseInsensitive) )
-//    {
-//        //if ( hrLodEngine::fillInternalCache(normalPath) )
-//            //qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-//        //else
-//            qCCritical(fsCat) << MOUNT_FAILED;
-//    }
-//    else if ( normalPath.endsWith(".snd", Qt::CaseInsensitive) )
-//    {
-//        if ( hrSndEngine::fillInternalCache(normalPath) )
-//            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-//        else
-//            qCCritical(fsCat) << MOUNT_FAILED;
-//    }
-//    else
-//    {
-//        if ( !mountDir(normalPath))
-//            qCCritical(fsCat) << "\tUnsupported archive type";
-//        else
-//            qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
-//    }
+    else
+        mountFile(normalPath);
 
     return true;
 }
@@ -187,112 +149,93 @@ QByteArray hrFilesystem::findResource(const QString& name)
     return result;
 }
 
-void hrFilesystem::fillGeneralCache(const QString &filename, const QString &archive)
-{
-    _cache.insert(filename, archive);
-}
-
 void hrFilesystem::walkDirectory(const QString &path, QStringList &fileList)
 {
-    QFileInfo info(path);
+    QDir mounted(path);
+    QFileInfoList entries = mounted.entryInfoList();
 
-    if ( info.isDir() )
+    for ( int i = 0; i < entries.size(); i++)
     {
-        QDir mounted(path);
-        QFileInfoList entries = mounted.entryInfoList();
+        if ( entries[i].fileName() == "." || entries[i].fileName() == "..")
+            continue;
 
-        for ( int i = 0; i < entries.size(); i++)
+        if ( entries[i].isDir() )
         {
-            if ( entries[i].fileName() == "." || entries[i].fileName() == "..")
-                continue;
-
-            if ( entries[i].isDir() )
-            {
-                walkDirectory(entries[i].absoluteFilePath(), fileList);
-                continue;
-            }
-
-            fileList.append(entries[i].absoluteFilePath());
+            walkDirectory(entries[i].absoluteFilePath(), fileList);
+            continue;
         }
+
+        fileList.append(entries[i].absoluteFilePath());
     }
 }
 
 bool hrFilesystem::mountDir(const QString &path)
 {
-    QFileInfo info(path);
+    QStringList fileList;
+    walkDirectory(path, fileList);
 
-    if ( info.isDir() )
+    for(auto& file : fileList)
     {
-        QStringList fileList;
-        walkDirectory(path, fileList);
+        file.remove(path);
+        file.remove(0, 1); // remove first '/'
 
-        for ( int i = 0; i < fileList.size(); i++)
-        {
-            fileList[i].remove(path);
-            fileList[i].remove(0, 1); // remove first '/'
-            hrFilesystem::fillGeneralCache(fileList[i], path);
-        }
+        if(!mountFile(file))
+            return false;
     }
 
-    return info.isDir();
+    return true;
 }
 
-/*!
-  Try to find archive where the file located.
-  @param filename Filename to found.
-  @return Archive name or null string on error.
-*/
-QString hrFilesystem::findInCache(const QString &filename)
+bool hrFilesystem::mountFile(const QString& path)
 {
-    if ( _cache.find(filename) != _cache.end() )
+    QString extension = path.right(path.length() - (path.lastIndexOf('.') + 1));
+
+    if ( !_extensions.contains(extension) )
     {
-        return _cache[filename];
+        qCCritical(fsCat) << "\tUnsupported archive type";
+        return false;
     }
 
-    QList<QString> keys = _cache.keys();
-    QStringList keys_string(keys);
-    QStringList results;
+    auto& creator = _extensions.value(extension);
+    _files.append(QSharedPointer<hrResourceFile>(creator(path)));//TODO errors support
 
-    results = keys_string.filter(filename,  Qt::CaseInsensitive);
+    qCInfo(fsCat) << MOUNT_SUCCESSFULLY;
 
-    if ( results.size() > 0 )
-        return _cache[results[0]];
-
-    return QString();
+    return true;
 }
 
-/**
- *  Extract archive name from full path.
- *  @param path a case-sensitive path
- *  @param ext Must be ".lod" or ".snd" or something else
- *  @return Archive name or null string on error.
- */
-QString hrFilesystem::extractArchnameFromPath(const QString& path, const char* ext)
-{
-    QString archive;
-    int index = path.indexOf(ext);
+///**
+// *  Extract archive name from full path.
+// *  @param path a case-sensitive path
+// *  @param ext Must be ".lod" or ".snd" or something else
+// *  @return Archive name or null string on error.
+// */
+//QString hrFilesystem::extractArchnameFromPath(const QString& path, const char* ext)
+//{
+//    QString archive;
+//    int index = path.indexOf(ext);
 
-    if ( index == -1 )
-        return QString();
+//    if ( index == -1 )
+//        return QString();
 
-    archive = path.left(index + qstrlen(ext));
-    archive.remove(0, qstrlen(ext) + 1);
+//    archive = path.left(index + qstrlen(ext));
+//    archive.remove(0, qstrlen(ext) + 1);
 
-    return archive;
-}
+//    return archive;
+//}
 
-/**
- *  Extract filename with path from full path.
- *  @param path a case-sensitive path
- *  @param ext Must be ".lod" or ".snd" or something else
- *  @return Archive name or null string on error.
- */
-QString hrFilesystem::extractFilenameFromPath(const QString& path, const char* ext)
-{
-    int index = path.indexOf(ext);
+///**
+// *  Extract filename with path from full path.
+// *  @param path a case-sensitive path
+// *  @param ext Must be ".lod" or ".snd" or something else
+// *  @return Archive name or null string on error.
+// */
+//QString hrFilesystem::extractFilenameFromPath(const QString& path, const char* ext)
+//{
+//    int index = path.indexOf(ext);
 
-    if ( index == -1 )
-        return QString();
+//    if ( index == -1 )
+//        return QString();
 
-    return path.right(path.length() - index - qstrlen(ext) - 1 );
-}
+//    return path.right(path.length() - index - qstrlen(ext) - 1 );
+//}

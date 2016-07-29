@@ -17,7 +17,7 @@ hrSndFile::hrSndFile(const QString& path) :
         for ( quint32 i = 0; i < count; ++i )
         {
             SndEntry entry;
-            memset(&entry, 0, sizeof(entry) );
+            memset(&entry, 0, sizeof(SndEntry) );
 
             _file.read( (char *) &entry, sizeof(SndEntry));
 
@@ -44,13 +44,12 @@ QByteArray hrSndFile::getEntry(const QString &entryName)
 {
     QByteArray result;
 
-    if ( !_entryMap.contains(entryName) )
-    {
-        //TODO log
-        return result;
-    }
+    QString lowerName = entryName.toLower();
 
-    SndEntry entry = _entryMap.value(entryName);
+    if ( !_entryMap.contains(lowerName) )
+        return result;
+
+    SndEntry entry = _entryMap.value(lowerName);
 
     if ( _file.seek(entry.offset) )
         result = _file.read(entry.size);
