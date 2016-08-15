@@ -1,7 +1,8 @@
 1. Merge hrFullscreenWrapper functionality into hrWindow
-2. Transform hrWindow from QMainWindow to something lightweightable
+2. Transform hrWindow from QMainWindow to something more lightweightable
 3. Do something with logging(separate it from hrApplication)
-4. transform object_class in hrObject to enum
+4. Transform object_class in hrObject to enum
 5. Terminate magic numbers
 6. Replace pack/unpack in maps to qCompress/qUncompress (no need for zlib sources)
 7. Transfer hrCache to core classes
+8. Why image plugins are in separate project?
